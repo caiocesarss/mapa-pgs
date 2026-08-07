@@ -695,7 +695,8 @@
     isAdmin ? renderDashboard() : renderLogin();
     backdrop.classList.add('show');
   });
-  backdrop.addEventListener('click', function(e){ if(e.target === backdrop) closeModal(); });
+  // Clicar fora do formulário não fecha mais o modal, para evitar perda
+  // acidental do que já foi digitado. Só o botão "✕" (ou Cancelar edição) fecha.
 
   function closeModal(){
     backdrop.classList.remove('show');
