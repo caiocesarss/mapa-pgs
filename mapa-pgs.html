@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Mapa de Pequenos Grupos</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PGs">
+<meta name="theme-color" content="#101B33">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAE8klEQVR4nO3dPW4bOxSGYfriFmkCpA/gTaTOptylTHW7bOqW2UU2kCKNyxQEBEOjTx5Jh+R3zrxP6RgahnyHGuv36dPnLw245J/VA4Av4oBEHJCIAxJxQCIOSMQBiTggEQck4oBEHJCIAxJxQCIOSMQBiTggEQck4oBEHJCIAxJxQCIOSMQBiTggEQck4oBEHJCIAxJxQCIOSMQBiTggEQck4oBEHJCIAxJxQPp39QBW+vXjw55fe355HT0ST0+H+qjJnTVcd5xWDhFHSBNb5SupHMegJraqVlIzjmlZvFUvkWpx3JTFzuUccZsp1IljzxKGrNy0Ay1XIY53V2vQUq067jTp47i+QhOWZ/kAxskdx5WFmbwqPiMJlDUOz8XwHNXdUsah1sBkAcyHt1++J978p16NZMmjL49ItnNcnF+fLM7kGu1Wpp0j3VxfHFui/SNNHOnK6FL3kSOOpGV0eftIEEfqMrqkfSSIYytXGV3GMbvHsT29Ms5ytx25+eZhHUelMrpcffjGUa+MLlEfvnFgOdM4qm4bXZbNI8f7VoaWseSp1OeXV88g3nKMY86s7TnK6XfmvGjIbXd0jONM7JTdV96ISvw3D7trjqHz9fiNmw8vlvvOEXWm/vrx4ePXb29/8uf//+6+qRY0MPPNw2vnGDRTv39+Pyujtfbx67ftD/cbNFSrVrziOBNydv7++f3Kvy7vw+0i9C3rOB53vYxueR+2jOI4m+jHT6k9ZXRr+zj7n/oEZxRHrJlT7LOcscrGcetm8MjmUZVLHLH3KfNP5QeP6HnP4hJHoFUza7KigQrGgSjEAalaHKe9/dZHx+9+NP3i0WuwiCP8EY6MDK9JLeIYZP9mELJt1FMqju3ZtmfVY8twOOOjlIrjoutrz55xhfvrOUL0AqJez3Ech4ijo4Zb1b9bwd2IAxJxQCIOSMQBqVQcDo+7O4whSqk4EMsiDsPnnOYzfPbRIo5Aa+fUYUUDVYsDgYgDUsE4Vu3txe5Tmk8csdek89cp9r0UJp25xAFDZeOYefKZnOjhjOIIf7Rjzpo9fhTP+5RmFccIoyfaZyFHsI7D/NNRpn2F8SpecQxayBE3m2iod/OKYyvqxHp+eY2a98Cbct42mmEcQ0+dx2/cfHixErz6PPajfU83ddNZO2LZzLeN5hnHnE/n3FPJwR8scYxja+jngi9ZFf9toxlec3RZvnTiPlm+MMQ0DjjwjaPq5pFl22jOcbSKfSQqo5nH0Wr1kauM5h/HRRn7yDjmBHEk/a7vt5J+43qCOFryPpKW0bLE0dL2kbeMliiOlrCP1GW01p4+ff6yegy3UTVYTXqKQb4r087Rqfn12UJqlNEy7hydyVOpZzxHdbescXQ+i+EzkkC542jv3ZvM+ZrxtQMYJ30cbcfVxqAVWnXcaSrE0e25IJ32ZoLsWXR14uhGvDJ0+atNV6kWR7fkz9pKWXQ14+imJVIvi65yHCeDKqnaxMkh4jgxf/Otm2PFcWZnK8ep4cyh48B1+Z54wzTEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUAiDkjEAYk4IBEHJOKARByQiAMScUD6Czuo0BxpnGvDAAAAAElFTkSuQmCC">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --night: #101B33;
+    --night-deep: #0B1426;
+    --paper: #FBF7EF;
+    --paper-dim: #F0E9DA;
+    --amber: #F2A93B;
+    --amber-soft: rgba(242,169,59,0.28);
+    --clay: #E4572E;
+    --sage: #6B8F71;
+    --ink: #1B1B1F;
+    --ink-muted: #6B6B76;
+    --line: rgba(255,255,255,0.14);
+    --font-display: 'Iowan Old Style','Palatino Linotype','URW Palladio L', Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'SF Mono', SFMono-Regular, ui-monospace, 'Roboto Mono', monospace;
+    --radius-lg: 22px;
+    --radius-md: 14px;
+    --shadow-lift: 0 12px 32px rgba(11,20,38,0.35);
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  html,body{ margin:0; height:100%; font-family:var(--font-body); background:var(--night); overflow:hidden; }
+  #map{ position:absolute; inset:0; background:var(--paper-dim); }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:absolute; top:0; left:0; right:0; z-index:500;
+    padding: max(14px, env(safe-area-inset-top)) 14px 0;
+    display:flex; flex-direction:column; gap:10px;
+    pointer-events:none;
+  }
+  .searchpill{
+    pointer-events:auto;
+    display:flex; align-items:center; gap:8px;
+    background: rgba(16,27,51,0.92);
+    backdrop-filter: blur(10px);
+    border:1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 8px 6px 16px;
+    box-shadow: var(--shadow-lift);
+  }
+  .searchpill input{
+    flex:1; border:none; outline:none; background:transparent;
+    color:var(--paper); font-family:var(--font-body); font-size:15px;
+    padding:10px 0;
+  }
+  .searchpill input::placeholder{ color: rgba(251,247,239,0.45); }
+  .iconbtn{
+    flex-shrink:0; width:40px; height:40px; border-radius:50%;
+    border:none; background: var(--amber); color: var(--night-deep);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:17px; transition: transform .15s ease;
+  }
+  .iconbtn:active{ transform: scale(0.9); }
+  .iconbtn.ghost{ background: rgba(255,255,255,0.08); color: var(--paper); }
+  .toprow{ display:flex; gap:8px; pointer-events:auto; }
+  .dayfilter-row{ overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px; }
+  .dayfilter-row::-webkit-scrollbar{ display:none; }
+  .dayfilter-row .chip{ flex-shrink:0; }
+  .chip{
+    background: rgba(16,27,51,0.92); backdrop-filter: blur(10px);
+    border:1px solid var(--line); color: var(--paper);
+    font-size:13px; padding:8px 14px; border-radius:999px;
+    display:flex; align-items:center; gap:6px; cursor:pointer;
+    box-shadow: var(--shadow-lift);
+  }
+  .chip.active{ background: var(--amber); color: var(--night-deep); border-color: transparent; font-weight:600; }
+
+  /* ---------- Glow markers ---------- */
+  .glow-dot{
+    width:16px; height:16px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #fff, var(--glow-color, #7C3AED) 75%);
+    box-shadow: 0 0 0 5px var(--glow-soft, rgba(124,58,237,0.22)), 0 0 16px 5px var(--glow-strong, rgba(124,58,237,0.55));
+    animation: pulseGlow 2.6s ease-in-out infinite;
+  }
+  .glow-dot.mine{
+    background: radial-gradient(circle at 35% 30%, #DCEBFF, #5B8DEF 70%);
+    box-shadow: 0 0 0 5px rgba(91,141,239,0.22), 0 0 16px 5px rgba(91,141,239,0.55);
+    animation: none;
+  }
+  @keyframes pulseGlow{
+    0%,100%{ box-shadow: 0 0 0 5px var(--glow-soft, rgba(124,58,237,.22)), 0 0 14px 4px var(--glow-strong, rgba(124,58,237,.45)); }
+    50%{ box-shadow: 0 0 0 9px var(--glow-soft2, rgba(124,58,237,.12)), 0 0 24px 10px var(--glow-strong2, rgba(124,58,237,.65)); }
+  }
+  .color-grid{ display:flex; flex-wrap:wrap; gap:11px; margin-top:2px; padding:2px; }
+  .color-swatch{
+    width:30px; height:30px; border-radius:50%; cursor:pointer; flex-shrink:0;
+    border:3px solid transparent; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+    transition: transform .12s ease;
+  }
+  .color-swatch:active{ transform: scale(0.88); }
+  .color-swatch.selected{ border-color:#fff; box-shadow: 0 0 0 2px var(--ink), inset 0 0 0 1px rgba(0,0,0,0.1); }
+
+  /* ---------- Empty state ---------- */
+  .empty-hint{
+    position:absolute; left:50%; top:44%; transform:translate(-50%,-50%);
+    z-index:400; text-align:center; color: var(--ink);
+    font-family: var(--font-display); font-size:16px; line-height:1.5;
+    max-width:260px; pointer-events:none;
+    background: rgba(255,255,255,0.9); padding:18px 20px; border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lift);
+  }
+
+  /* ---------- Bottom sheet ---------- */
+  .sheet-backdrop{
+    position:absolute; inset:0; z-index:600; background: rgba(11,20,38,0.35);
+    opacity:0; pointer-events:none; transition: opacity .25s ease;
+  }
+  .sheet-backdrop.show{ opacity:1; pointer-events:auto; }
+  .sheet{
+    position:absolute; left:0; right:0; bottom:0; z-index:601;
+    background: var(--paper); border-radius: 26px 26px 0 0;
+    box-shadow: 0 -14px 40px rgba(11,20,38,0.4);
+    transform: translateY(105%); transition: transform .32s cubic-bezier(.2,.9,.25,1);
+    padding: 10px 22px calc(24px + env(safe-area-inset-bottom));
+    max-height: 72vh; overflow-y:auto;
+  }
+  .sheet.show{ transform: translateY(0); }
+  .drag-handle{ width:38px; height:4px; background:#DCD3BE; border-radius:99px; margin: 6px auto 16px; }
+  .sheet-eyebrow{ font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-muted); font-weight:600; }
+  .sheet h2{ font-family:var(--font-display); font-size:26px; margin:4px 0 14px; color:var(--ink); }
+  .sheet-row{ display:flex; align-items:center; gap:12px; padding:11px 0; border-top:1px solid rgba(27,27,31,0.08); }
+  .sheet-row:first-of-type{ border-top:none; }
+  .avatar{
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-size:15px; font-weight:600; color:#fff;
+  }
+  .avatar.host{ background: var(--clay); }
+  .avatar.leader{ background: var(--sage); }
+  .sheet-row .label{ font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-muted); }
+  .sheet-row .value{ font-size:16px; color:var(--ink); font-weight:500; }
+  .contact-btns{ margin-left:auto; display:flex; gap:8px; }
+  .callbtn{
+    background: var(--night); color:var(--paper);
+    border:none; border-radius:999px; padding:9px 16px; font-size:13px;
+    font-weight:600; text-decoration:none; display:flex; align-items:center; gap:6px;
+  }
+  .callbtn.wa{ background:#25D366; }
+  .join-group-btn{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    margin-top:14px; background:#25D366; color:#fff; text-decoration:none;
+    padding:14px; border-radius:14px; font-weight:600; font-size:14.5px;
+  }
+  .area-note{
+    margin-top:16px; background: var(--paper-dim); border-radius: var(--radius-md);
+    padding:12px 14px; font-size:13px; color:var(--ink-muted); display:flex; gap:9px; align-items:flex-start;
+  }
+  .close-sheet{
+    position:absolute; top:14px; right:16px; width:32px; height:32px; border-radius:50%;
+    border:none; background:rgba(27,27,31,0.06); color:var(--ink); font-size:16px; cursor:pointer;
+  }
+
+  /* ---------- List overlay ---------- */
+  .list-overlay{
+    position:absolute; inset:0; z-index:520; background: var(--night);
+    padding: calc(78px + env(safe-area-inset-top)) 16px 20px;
+    overflow-y:auto; transform: translateX(105%); transition: transform .28s ease;
+  }
+  .list-overlay.show{ transform: translateX(0); }
+  .list-title{ font-family:var(--font-display); color:var(--paper); font-size:22px; margin: 4px 0 14px; }
+  .list-card{
+    background: rgba(251,247,239,0.06); border:1px solid var(--line);
+    border-radius: var(--radius-md); padding:14px 16px; margin-bottom:10px;
+    display:flex; justify-content:space-between; align-items:center; cursor:pointer;
+  }
+  .list-card h3{ margin:0 0 4px; color:var(--paper); font-family:var(--font-display); font-size:17px; }
+  .list-card p{ margin:0; color: rgba(251,247,239,0.55); font-size:12.5px; }
+  .list-card .arrow{ color:var(--amber); font-size:18px; }
+
+  /* ---------- FAB ---------- */
+  .fab{
+    position:absolute; right:16px; bottom: calc(20px + env(safe-area-inset-bottom));
+    z-index:500; width:52px; height:52px; border-radius:50%;
+    background: var(--night); border:1px solid var(--line); color:var(--paper);
+    display:flex; align-items:center; justify-content:center; font-size:19px;
+    box-shadow: var(--shadow-lift); cursor:pointer;
+  }
+
+  /* ---------- Admin modal ---------- */
+  .modal-backdrop{
+    position:fixed; inset:0; z-index:900; background: rgba(11,20,38,0.55);
+    display:none; align-items:flex-end; justify-content:center;
+  }
+  .modal-backdrop.show{ display:flex; }
+  .modal{
+    width:100%; max-width:480px; background:var(--paper); border-radius:26px 26px 0 0;
+    max-height:88vh; overflow-y:auto; padding:20px 22px calc(26px + env(safe-area-inset-bottom));
+    animation: slideUp .28s cubic-bezier(.2,.9,.25,1);
+  }
+  @keyframes slideUp{ from{ transform:translateY(40px); opacity:0;} to{ transform:translateY(0); opacity:1;} }
+  .modal h2{ font-family:var(--font-display); font-size:23px; margin:6px 0 4px; color:var(--ink); }
+  .modal .sub{ font-size:13px; color:var(--ink-muted); margin:0 0 18px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12px; font-weight:600; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
+  .field input, .field select{
+    width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid #E4DBC7;
+    font-size:15px; font-family:var(--font-body); background:#fff; color:var(--ink);
+  }
+  .field input:focus, .field select:focus{ outline:none; border-color:var(--amber); }
+  .field .hint{ font-size:11.5px; color:var(--ink-muted); margin-top:5px; }
+  .ac-wrap{ position:relative; }
+  .ac-list{
+    position:absolute; left:0; right:0; top:100%; margin-top:6px;
+    background:#fff; border:1px solid #E4DBC7; border-radius:12px;
+    box-shadow: 0 10px 28px rgba(11,20,38,0.2); max-height:230px; overflow-y:auto;
+    display:none; z-index:50;
+  }
+  .ac-list.dark{ background: var(--night); border-color: var(--line); }
+  .ac-item{ padding:11px 14px; font-size:13.5px; color:var(--ink); cursor:pointer; border-top:1px solid #F0E9DA; line-height:1.35; }
+  .ac-item:first-child{ border-top:none; }
+  .ac-item:hover, .ac-item:active{ background:#F7F1E4; }
+  .ac-list.dark .ac-item{ color: var(--paper); border-top-color: rgba(255,255,255,0.08); }
+  .ac-list.dark .ac-item:hover{ background: rgba(255,255,255,0.06); }
+  .btn-primary{
+    width:100%; padding:14px; border:none; border-radius:14px; background:var(--night);
+    color:var(--paper); font-size:15px; font-weight:600; cursor:pointer; margin-top:6px;
+  }
+  .btn-primary:active{ opacity:.85; }
+  .btn-secondary{
+    width:100%; padding:12px; border:1.5px solid #E4DBC7; border-radius:14px; background:transparent;
+    color:var(--ink); font-size:14px; font-weight:600; cursor:pointer; margin-top:8px;
+  }
+  .btn-danger{ background: var(--clay); color:#fff; }
+  .pick-toggle{
+    display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--ink-muted);
+    margin: -4px 0 14px;
+  }
+  .pick-toggle button{
+    border:none; background:var(--amber-soft); color:#8A5A0D; padding:6px 11px;
+    border-radius:999px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  .admin-divider{ height:1px; background:#E4DBC7; margin:20px 0; }
+  .manage-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:11px 0; border-top:1px solid #EFE7D5;
+  }
+  .manage-item:first-of-type{ border-top:none; }
+  .manage-item .info h4{ margin:0 0 2px; font-size:14.5px; font-family:var(--font-display); }
+  .manage-item .info p{ margin:0; font-size:12px; color:var(--ink-muted); }
+  .manage-actions{ display:flex; gap:6px; }
+  .icon-mini{
+    width:30px; height:30px; border-radius:9px; border:none; background:#F0E9DA;
+    font-size:13px; cursor:pointer;
+  }
+  .modal-close{
+    position:absolute; top:16px; right:18px; width:30px; height:30px; border-radius:50%;
+    border:none; background:rgba(27,27,31,0.06); font-size:15px; cursor:pointer;
+  }
+  .toast{
+    position:absolute; left:50%; bottom:100px; transform:translateX(-50%) translateY(20px);
+    z-index:950; background:var(--night); color:var(--paper); padding:11px 18px;
+    border-radius:999px; font-size:13px; opacity:0; transition:all .25s ease; pointer-events:none;
+    box-shadow: var(--shadow-lift); white-space:nowrap;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div class="empty-hint" id="emptyHint">Nenhum grupo cadastrado ainda.<br>Toque no ícone no canto inferior direito para adicionar o primeiro PG.</div>
+
+<div class="topbar">
+  <div class="searchpill">
+    <div class="ac-wrap" style="flex:1;">
+      <input id="addressInput" type="text" placeholder="Digite seu endereço para se situar" autocomplete="off" />
+    </div>
+    <button class="iconbtn" id="locateBtn" title="Usar minha localização">◉</button>
+  </div>
+  <div class="toprow">
+    <div class="chip active" id="viewMapChip">Mapa</div>
+    <div class="chip" id="viewListChip">Lista</div>
+  </div>
+  <div class="toprow dayfilter-row" id="dayFilterRow">
+    <div class="chip active" data-day="all">Todos</div>
+    <div class="chip" data-day="dom">Dom</div>
+    <div class="chip" data-day="seg">Seg</div>
+    <div class="chip" data-day="ter">Ter</div>
+    <div class="chip" data-day="qua">Qua</div>
+    <div class="chip" data-day="qui">Qui</div>
+    <div class="chip" data-day="sex">Sex</div>
+    <div class="chip" data-day="sab">Sáb</div>
+  </div>
+</div>
+
+<div class="fab" id="adminFab" title="Área do administrador">🔒</div>
+
+<div class="list-overlay" id="listOverlay">
+  <h3 class="list-title">Pequenos grupos</h3>
+  <div id="listContent"></div>
+</div>
+
+<div class="sheet-backdrop" id="sheetBackdrop"></div>
+<div class="sheet" id="sheet">
+  <button class="close-sheet" id="closeSheet">✕</button>
+  <div class="drag-handle"></div>
+  <div class="sheet-eyebrow" id="sheetEyebrow">Pequeno grupo</div>
+  <h2 id="sheetTitle">Nome do PG</h2>
+  <div class="sheet-row">
+    <div class="avatar host" id="hostAvatar">A</div>
+    <div>
+      <div class="label">Anfitrião</div>
+      <div class="value" id="hostName">-</div>
+    </div>
+  </div>
+  <div class="sheet-row">
+    <div class="avatar leader" id="leaderAvatar">L</div>
+    <div>
+      <div class="label">Líder</div>
+      <div class="value" id="leaderName">-</div>
+    </div>
+  </div>
+  <div class="sheet-row">
+    <div>
+      <div class="label">Dia e horário</div>
+      <div class="value" id="dayTime">-</div>
+    </div>
+    <div class="contact-btns" id="contactBtns">
+      <a class="callbtn" id="callBtn" href="#">📞 Ligar</a>
+      <a class="callbtn wa" id="waBtn" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+    </div>
+  </div>
+  <div class="sheet-row" id="notesRow" style="display:none;">
+    <div>
+      <div class="label">Observações</div>
+      <div class="value" id="notesValue">-</div>
+    </div>
+  </div>
+  <a class="join-group-btn" id="joinGroupBtn" href="#" target="_blank" rel="noopener" style="display:none;">💬 Entrar no grupo do WhatsApp</a>
+  <div class="area-note">📍 <span>O endereço exato não é exibido. O círculo no mapa indica a área aproximada, dentro de <span id="radiusText">300m</span>.</span></div>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+(function(){
+  // ---------- Configuração do Supabase ----------
+  // Troque pelos valores do seu projeto: Supabase > Project Settings > API
+  var SUPABASE_URL = 'https://zfoftvlhtftagzjoefnm.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmb2Z0dmxodGZ0YWd6am9lZm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMzY3NDAsImV4cCI6MjEwMTcxMjc0MH0.3ATrh4o9odPk_9PO9jzNEwUib3FWbiKjE9zu01yObB8';
+  var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  var DEFAULT_CENTER = [26.3184, -80.0998]; // Deerfield Beach, FL - ajuste para a sua cidade
+  var DEFAULT_COLOR = '#7C3AED';
+  // Paleta curada: tons de média/alta saturação e escurecidos o suficiente para manter
+  // contraste legível sobre o mapa claro. Evite adicionar tons muito claros/pastéis aqui.
+  var COLOR_PALETTE = [
+    { name:'Roxo', hex:'#7C3AED' },
+    { name:'Índigo', hex:'#4F46E5' },
+    { name:'Azul', hex:'#2563EB' },
+    { name:'Azul-celeste', hex:'#0284C7' },
+    { name:'Turquesa', hex:'#0D9488' },
+    { name:'Esmeralda', hex:'#059669' },
+    { name:'Verde', hex:'#16A34A' },
+    { name:'Verde-oliva', hex:'#4D7C0F' },
+    { name:'Âmbar', hex:'#D97706' },
+    { name:'Laranja', hex:'#EA580C' },
+    { name:'Vermelho', hex:'#DC2626' },
+    { name:'Rosa-choque', hex:'#DB2777' },
+    { name:'Magenta', hex:'#C026D3' },
+    { name:'Violeta', hex:'#9333EA' },
+    { name:'Ciano', hex:'#0891B2' },
+    { name:'Marrom', hex:'#92400E' },
+    { name:'Grafite', hex:'#475569' },
+    { name:'Bordô', hex:'#9F1239' },
+    { name:'Mostarda', hex:'#B45309' },
+    { name:'Vinho', hex:'#7F1D1D' }
+  ];
+
+  var WEEKDAY_LABELS = { dom:'Domingo', seg:'Segunda-feira', ter:'Terça-feira', qua:'Quarta-feira', qui:'Quinta-feira', sex:'Sexta-feira', sab:'Sábado' };
+
+  function hexToRgba(hex, alpha){
+    var h = hex.replace('#','');
+    if(h.length === 3) h = h.split('').map(function(c){ return c+c; }).join('');
+    var r = parseInt(h.substring(0,2),16), g = parseInt(h.substring(2,4),16), b = parseInt(h.substring(4,6),16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+  }
+
+  function glowStyle(hex){
+    return '--glow-color:' + hex + ';' +
+      '--glow-soft:' + hexToRgba(hex, 0.22) + ';' +
+      '--glow-strong:' + hexToRgba(hex, 0.55) + ';' +
+      '--glow-soft2:' + hexToRgba(hex, 0.12) + ';' +
+      '--glow-strong2:' + hexToRgba(hex, 0.65) + ';';
+  }
+
+  var isAdmin = false;
+  var pgs = [];
+  var activeDayFilter = 'all';
+  var userMarker = null;
+  var pickingOnMap = false;
+  var pickedLatLng = null;
+  var editingId = null;
+
+  var map = L.map('map', { zoomControl:false, attributionControl:false }).setView(DEFAULT_CENTER, 13);
+  L.control.zoom({ position:'bottomleft' }).addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    subdomains:'abcd', maxZoom:19
+  }).addTo(map);
+
+  var markersLayer = L.layerGroup().addTo(map);
+
+  function toast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+  }
+
+  function dayTimeLabel(pg){
+    var dayLabel = WEEKDAY_LABELS[pg.weekday] || '';
+    if(dayLabel && pg.dayTime) return dayLabel + ' · ' + pg.dayTime;
+    if(dayLabel) return dayLabel;
+    return pg.dayTime || '';
+  }
+
+  function uid(){ return 'pg_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+  function rowToPg(row){
+    return {
+      id: row.id, groupName: row.group_name, hostName: row.host_name, leaderName: row.leader_name,
+      phone: row.phone, phoneCountry: row.phone_country, showPhone: row.show_phone,
+      whatsappGroupLink: row.whatsapp_group_link, dayTime: row.day_time, weekday: row.weekday,
+      notes: row.notes, radius: row.radius, color: row.color, address: row.address,
+      lat: row.lat, lng: row.lng
+    };
+  }
+
+  function pgToRow(pg){
+    return {
+      id: pg.id, group_name: pg.groupName, host_name: pg.hostName, leader_name: pg.leaderName,
+      phone: pg.phone, phone_country: pg.phoneCountry, show_phone: pg.showPhone,
+      whatsapp_group_link: pg.whatsappGroupLink, day_time: pg.dayTime, weekday: pg.weekday,
+      notes: pg.notes, radius: pg.radius, color: pg.color, address: pg.address,
+      lat: pg.lat, lng: pg.lng
+    };
+  }
+
+  function initials(name){
+    if(!name) return '?';
+    var parts = name.trim().split(/\s+/);
+    return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+  }
+
+  function jitter(lat, lng, radiusMeters){
+    var angle = Math.random() * 2 * Math.PI;
+    var dist = Math.random() * radiusMeters * 0.45;
+    var dLat = (dist * Math.cos(angle)) / 111320;
+    var dLng = (dist * Math.sin(angle)) / (111320 * Math.cos(lat * Math.PI/180));
+    return [lat + dLat, lng + dLng];
+  }
+
+  async function loadPgs(){
+    try{
+      var result = await sb.from('pgs').select('*').order('created_at', { ascending: true });
+      if(result.error) throw result.error;
+      pgs = (result.data || []).map(rowToPg);
+    }catch(e){
+      pgs = [];
+      toast('Não foi possível carregar os grupos. Verifique a conexão com o Supabase.');
+    }
+    render();
+  }
+
+  function render(){
+    markersLayer.clearLayers();
+    var visible = activeDayFilter === 'all' ? pgs : pgs.filter(function(p){ return p.weekday === activeDayFilter; });
+    var emptyHint = document.getElementById('emptyHint');
+    if(!pgs.length){
+      emptyHint.style.display = 'block';
+      emptyHint.innerHTML = 'Nenhum grupo cadastrado ainda.<br>Toque no ícone no canto inferior direito para adicionar o primeiro PG.';
+    } else if(!visible.length){
+      emptyHint.style.display = 'block';
+      emptyHint.innerHTML = 'Nenhum PG encontrado para este dia.<br>Tente outro filtro ou toque em "Todos".';
+    } else {
+      emptyHint.style.display = 'none';
+    }
+    visible.forEach(function(pg){
+      var color = pg.color || DEFAULT_COLOR;
+      var circle = L.circle([pg.lat, pg.lng], {
+        radius: pg.radius, color: color, weight: 1.5, dashArray: '4 7',
+        fillColor: color, fillOpacity: 0.14
+      }).addTo(markersLayer);
+      circle.on('click', function(){ openSheet(pg); });
+    });
+    renderList(visible);
+  }
+
+  function renderList(visible){
+    visible = visible || (activeDayFilter === 'all' ? pgs : pgs.filter(function(p){ return p.weekday === activeDayFilter; }));
+    var el = document.getElementById('listContent');
+    if(!visible.length){
+      el.innerHTML = '<p style="color:rgba(251,247,239,0.6);font-size:14px;">Nenhum grupo encontrado para este filtro.</p>';
+      return;
+    }
+    el.innerHTML = '';
+    visible.forEach(function(pg){
+      var card = document.createElement('div');
+      card.className = 'list-card';
+      var dt = dayTimeLabel(pg);
+      card.innerHTML = '<div><h3>' + escapeHtml(pg.groupName) + '</h3><p>' + (dt ? escapeHtml(dt) + ' · ' : '') + 'Anfitrião: ' + escapeHtml(pg.hostName) + '</p></div><div class="arrow">›</div>';
+      card.addEventListener('click', function(){
+        toggleView('map');
+        map.flyTo([pg.lat, pg.lng], 16, { duration: 0.6 });
+        setTimeout(function(){ openSheet(pg); }, 300);
+      });
+      el.appendChild(card);
+    });
+  }
+
+  function escapeHtml(s){
+    return (s || '').replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+    });
+  }
+
+  function openSheet(pg){
+    document.getElementById('sheetTitle').textContent = pg.groupName;
+    document.getElementById('hostName').textContent = pg.hostName;
+    document.getElementById('leaderName').textContent = pg.leaderName;
+    document.getElementById('hostAvatar').textContent = initials(pg.hostName);
+    document.getElementById('leaderAvatar').textContent = initials(pg.leaderName);
+    document.getElementById('dayTime').textContent = dayTimeLabel(pg) || '-';
+    var phoneDigits = pg.phone ? pg.phone.replace(/\D/g, '') : '';
+    var contactBtns = document.getElementById('contactBtns');
+    if(pg.showPhone !== false && phoneDigits){
+      contactBtns.style.display = 'flex';
+      document.getElementById('callBtn').href = 'tel:' + dialCodeFor(pg.phoneCountry) + phoneDigits;
+      document.getElementById('waBtn').href = 'https://wa.me/' + dialCodeFor(pg.phoneCountry).replace('+','') + phoneDigits;
+    } else {
+      contactBtns.style.display = 'none';
+    }
+    var joinBtn = document.getElementById('joinGroupBtn');
+    if(pg.whatsappGroupLink){
+      joinBtn.style.display = 'flex';
+      joinBtn.href = pg.whatsappGroupLink;
+    } else {
+      joinBtn.style.display = 'none';
+    }
+    document.getElementById('radiusText').textContent = '~' + pg.radius + 'm';
+    var notesRow = document.getElementById('notesRow');
+    if(pg.notes){ notesRow.style.display='flex'; document.getElementById('notesValue').textContent = pg.notes; }
+    else { notesRow.style.display = 'none'; }
+    document.getElementById('sheet').classList.add('show');
+    document.getElementById('sheetBackdrop').classList.add('show');
+  }
+
+  function closeSheet(){
+    document.getElementById('sheet').classList.remove('show');
+    document.getElementById('sheetBackdrop').classList.remove('show');
+  }
+  document.getElementById('closeSheet').addEventListener('click', closeSheet);
+  document.getElementById('sheetBackdrop').addEventListener('click', closeSheet);
+
+  function toggleView(which){
+    var listOv = document.getElementById('listOverlay');
+    var mapChip = document.getElementById('viewMapChip');
+    var listChip = document.getElementById('viewListChip');
+    if(which === 'list'){
+      listOv.classList.add('show'); mapChip.classList.remove('active'); listChip.classList.add('active');
+    } else {
+      listOv.classList.remove('show'); mapChip.classList.add('active'); listChip.classList.remove('active');
+    }
+  }
+  document.getElementById('viewMapChip').addEventListener('click', function(){ toggleView('map'); });
+  document.getElementById('viewListChip').addEventListener('click', function(){ toggleView('list'); });
+
+  document.querySelectorAll('#dayFilterRow .chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      activeDayFilter = chip.getAttribute('data-day');
+      document.querySelectorAll('#dayFilterRow .chip').forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      render();
+    });
+  });
+
+  // ---------- Localização do visitante ----------
+  function placeUserMarker(lat, lng, label){
+    if(userMarker) map.removeLayer(userMarker);
+    userMarker = L.marker([lat, lng], {
+      icon: L.divIcon({ className:'', html:'<div class="glow-dot mine"></div>', iconSize:[16,16], iconAnchor:[8,8] })
+    }).addTo(map);
+    map.flyTo([lat, lng], 14, { duration: 0.7 });
+    toast(label || 'Você está aqui');
+  }
+
+  document.getElementById('locateBtn').addEventListener('click', function(){
+    if(!navigator.geolocation){ toast('Geolocalização não disponível neste navegador.'); return; }
+    toast('Buscando sua localização...');
+    navigator.geolocation.getCurrentPosition(function(pos){
+      placeUserMarker(pos.coords.latitude, pos.coords.longitude, 'Localização encontrada');
+    }, function(){
+      toast('Não foi possível obter sua localização.');
+    }, { enableHighAccuracy: true, timeout: 8000 });
+  });
+
+  var addressInput = document.getElementById('addressInput');
+  addressInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ geocodeAndPlace(addressInput.value, placeUserMarker); }
+  });
+
+  async function geocodeAndPlace(query, onSuccess){
+    if(!query || !query.trim()) return;
+    toast('Localizando endereço...');
+    try{
+      var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&viewbox=-87.634896,31.000968,-79.974307,24.396308&bounded=1&q=' + encodeURIComponent(query);
+      var res = await fetch(url);
+      var data = await res.json();
+      if(data && data.length){
+        onSuccess(parseFloat(data[0].lat), parseFloat(data[0].lon), 'Endereço localizado');
+      } else {
+        toast('Endereço não encontrado. Tente ser mais específico.');
+      }
+    }catch(e){
+      toast('Busca automática indisponível agora. Tente pelo botão de localização.');
+    }
+  }
+
+  // ---------- Preenchimento automático de endereço ----------
+  var selectedGeocode = null;
+
+  function attachAutocomplete(input, dark, onSelect){
+    var wrap = document.createElement('div');
+    wrap.className = 'ac-list' + (dark ? ' dark' : '');
+    input.parentNode.appendChild(wrap);
+    var timer;
+    input.addEventListener('input', function(){
+      selectedGeocode = null;
+      clearTimeout(timer);
+      var q = input.value.trim();
+      if(q.length < 4){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+      timer = setTimeout(function(){ fetchSuggestions(q, wrap, input, onSelect); }, 350);
+    });
+    document.addEventListener('click', function(e){
+      if(e.target !== input && !wrap.contains(e.target)) wrap.style.display = 'none';
+    });
+  }
+
+  async function fetchSuggestions(query, wrap, input, onSelect){
+    try{
+      var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=0&countrycodes=us&viewbox=-87.634896,31.000968,-79.974307,24.396308&bounded=1&q=' + encodeURIComponent(query);
+      var res = await fetch(url);
+      var data = await res.json();
+      if(!data || !data.length){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+      wrap.innerHTML = '';
+      data.forEach(function(item){
+        var opt = document.createElement('div');
+        opt.className = 'ac-item';
+        opt.textContent = item.display_name;
+        opt.addEventListener('click', function(){
+          input.value = item.display_name;
+          wrap.style.display = 'none';
+          wrap.innerHTML = '';
+          onSelect({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), label: item.display_name });
+        });
+        wrap.appendChild(opt);
+      });
+      wrap.style.display = 'block';
+    }catch(e){
+      wrap.style.display = 'none';
+    }
+  }
+
+  attachAutocomplete(addressInput, true, function(sel){
+    placeUserMarker(sel.lat, sel.lng, 'Endereço localizado');
+  });
+
+  // ---------- Admin ----------
+  var backdrop = document.getElementById('modalBackdrop');
+  var modalBox = document.getElementById('modalBox');
+
+  document.getElementById('adminFab').addEventListener('click', function(){
+    isAdmin ? renderDashboard() : renderLogin();
+    backdrop.classList.add('show');
+  });
+  backdrop.addEventListener('click', function(e){ if(e.target === backdrop) closeModal(); });
+
+  function closeModal(){
+    backdrop.classList.remove('show');
+    pickingOnMap = false; pickedLatLng = null; editingId = null;
+  }
+
+  function renderLogin(){
+    modalBox.innerHTML =
+      '<button class="modal-close" onclick="window.__closeModal()">✕</button>' +
+      '<h2>Área do administrador</h2>' +
+      '<p class="sub">Entre com sua conta de administrador para cadastrar ou editar pequenos grupos.</p>' +
+      '<div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="voce@igreja.org"/></div>' +
+      '<div class="field"><label>Senha</label><input type="password" id="loginPassword" placeholder="••••••••"/></div>' +
+      '<button class="btn-primary" id="loginSubmit">Entrar</button>';
+    document.getElementById('loginSubmit').addEventListener('click', doLogin);
+    document.getElementById('loginPassword').addEventListener('keydown', function(e){ if(e.key === 'Enter') doLogin(); });
+  }
+
+  async function doLogin(){
+    var email = document.getElementById('loginEmail').value.trim();
+    var password = document.getElementById('loginPassword').value;
+    if(!email || !password){ toast('Preencha e-mail e senha.'); return; }
+    toast('Entrando...');
+    var result = await sb.auth.signInWithPassword({ email: email, password: password });
+    if(result.error){ toast('E-mail ou senha incorretos.'); return; }
+    isAdmin = true;
+    renderDashboard();
+  }
+
+  function renderDashboard(){
+    editingId = null; pickedLatLng = null; pickingOnMap = false;
+    modalBox.innerHTML =
+      '<button class="modal-close" onclick="window.__closeModal()">✕</button>' +
+      '<h2>Cadastrar pequeno grupo</h2>' +
+      '<p class="sub">Os dados abaixo ficam visíveis aos visitantes, exceto o endereço.</p>' +
+      formFieldsHtml() +
+      '<button class="btn-primary" id="saveBtn">Salvar pequeno grupo</button>' +
+      '<div class="admin-divider"></div>' +
+      '<h2 style="font-size:18px;">Grupos cadastrados (' + pgs.length + ')</h2>' +
+      '<div id="manageList"></div>' +
+      '<div class="admin-divider"></div>' +
+      '<button class="btn-secondary" id="logoutBtn">Sair da conta</button>';
+    bindFormEvents();
+    renderManageList();
+    document.getElementById('logoutBtn').addEventListener('click', async function(){
+      await sb.auth.signOut();
+      isAdmin = false;
+      closeModal();
+      toast('Sessão encerrada.');
+    });
+  }
+
+  function formFieldsHtml(prefill){
+    prefill = prefill || {};
+    return '' +
+      '<div class="field"><label>Nome do PG</label><input type="text" id="fGroupName" placeholder="Ex: PG Família Esperança" value="' + escapeHtml(prefill.groupName||'') + '"/></div>' +
+      '<div class="field"><label>Anfitrião</label><input type="text" id="fHostName" placeholder="Nome de quem recebe em casa" value="' + escapeHtml(prefill.hostName||'') + '"/></div>' +
+      '<div class="field"><label>Líder</label><input type="text" id="fLeaderName" placeholder="Nome de quem lidera" value="' + escapeHtml(prefill.leaderName||'') + '"/></div>' +
+      '<div class="field"><label>Telefone</label><div style="display:flex;gap:8px;">' +
+        '<select id="fPhoneCountry" style="width:92px;flex-shrink:0;">' +
+          '<option value="US"' + (prefill.phoneCountry === 'BR' ? '' : ' selected') + '>🇺🇸 EUA</option>' +
+          '<option value="BR"' + (prefill.phoneCountry === 'BR' ? ' selected' : '') + '>🇧🇷 Brasil</option>' +
+        '</select>' +
+        '<input type="tel" id="fPhone" placeholder="(305) 555-0123" value="' + escapeHtml(prefill.phone||'') + '" style="flex:1;"/>' +
+      '</div></div>' +
+      '<div class="field"><label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-weight:500;font-size:13.5px;color:var(--ink);"><input type="checkbox" id="fShowPhone" style="width:auto;" ' + (prefill.showPhone === false ? '' : 'checked') + '/> Exibir telefone para os visitantes (ligar e WhatsApp)</label></div>' +
+      '<div class="field"><label>Horário</label><input type="text" id="fDayTime" placeholder="Ex: 20h" value="' + escapeHtml(prefill.dayTime||'') + '"/></div>' +
+      '<div class="field"><label>Dia da semana (usado no filtro do mapa)</label><select id="fWeekday">' +
+        '<option value=""' + (!prefill.weekday ? ' selected' : '') + '>Selecione...</option>' +
+        '<option value="dom"' + (prefill.weekday==='dom' ? ' selected' : '') + '>Domingo</option>' +
+        '<option value="seg"' + (prefill.weekday==='seg' ? ' selected' : '') + '>Segunda-feira</option>' +
+        '<option value="ter"' + (prefill.weekday==='ter' ? ' selected' : '') + '>Terça-feira</option>' +
+        '<option value="qua"' + (prefill.weekday==='qua' ? ' selected' : '') + '>Quarta-feira</option>' +
+        '<option value="qui"' + (prefill.weekday==='qui' ? ' selected' : '') + '>Quinta-feira</option>' +
+        '<option value="sex"' + (prefill.weekday==='sex' ? ' selected' : '') + '>Sexta-feira</option>' +
+        '<option value="sab"' + (prefill.weekday==='sab' ? ' selected' : '') + '>Sábado</option>' +
+      '</select><div class="hint">Define em qual filtro de dia este PG vai aparecer para o visitante.</div></div>' +
+      '<div class="field"><label>Observações (opcional)</label><input type="text" id="fNotes" placeholder="Ex: acessível para cadeirantes" value="' + escapeHtml(prefill.notes||'') + '"/></div>' +
+      '<div class="field"><label>Link do grupo no WhatsApp (opcional)</label><input type="url" id="fWhatsappLink" placeholder="https://chat.whatsapp.com/..." value="' + escapeHtml(prefill.whatsappGroupLink||'') + '"/><div class="hint">Se preenchido, o visitante verá um botão para entrar direto no grupo do PG.</div></div>' +
+      '<div class="field"><label>Cor do círculo no mapa</label><div class="color-grid" id="colorGrid"></div><input type="hidden" id="fColor" value="' + (prefill.color || DEFAULT_COLOR) + '"/></div>' +
+      '<div class="field"><label>Raio de privacidade (metros)</label><input type="number" id="fRadius" min="80" step="10" value="' + (prefill.radius || 300) + '"/><div class="hint">O endereço exato nunca é mostrado, apenas uma área dentro deste raio.</div></div>' +
+      '<div class="field"><label>Endereço (uso interno, não é exibido)</label><div class="ac-wrap"><input type="text" id="fAddress" placeholder="Rua, número, cidade" value="' + escapeHtml(prefill.address||'') + '" autocomplete="off"/></div><div class="hint">Comece a digitar e escolha uma sugestão da lista para maior precisão.</div></div>' +
+      '<div class="pick-toggle"><span>Endereço não encontrado?</span><button type="button" id="pickBtn">Marcar no mapa</button></div>';
+  }
+
+  function formatUSPhone(value){
+    var digits = value.replace(/\D/g, '').slice(0, 10);
+    if(digits.length > 6) return '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6);
+    if(digits.length > 3) return '(' + digits.slice(0,3) + ') ' + digits.slice(3);
+    if(digits.length > 0) return '(' + digits;
+    return '';
+  }
+
+  function formatBRPhone(value){
+    var digits = value.replace(/\D/g, '').slice(0, 11);
+    if(digits.length > 10) return '(' + digits.slice(0,2) + ') ' + digits.slice(2,7) + '-' + digits.slice(7);
+    if(digits.length > 6) return '(' + digits.slice(0,2) + ') ' + digits.slice(2,6) + '-' + digits.slice(6);
+    if(digits.length > 2) return '(' + digits.slice(0,2) + ') ' + digits.slice(2);
+    if(digits.length > 0) return '(' + digits;
+    return '';
+  }
+
+  function formatPhoneByCountry(country, value){
+    return country === 'BR' ? formatBRPhone(value) : formatUSPhone(value);
+  }
+
+  function dialCodeFor(country){
+    return country === 'BR' ? '+55' : '+1';
+  }
+
+  function bindFormEvents(prefill){
+    selectedGeocode = null;
+    document.getElementById('pickBtn').addEventListener('click', function(){
+      pickingOnMap = true;
+      closeModal();
+      toast('Toque no mapa para marcar o local do PG');
+    });
+    document.getElementById('saveBtn').addEventListener('click', function(){ submitForm(prefill); });
+    attachAutocomplete(document.getElementById('fAddress'), false, function(sel){
+      selectedGeocode = sel;
+    });
+    var phoneInput = document.getElementById('fPhone');
+    var countrySelect = document.getElementById('fPhoneCountry');
+    phoneInput.addEventListener('input', function(e){ e.target.value = formatPhoneByCountry(countrySelect.value, e.target.value); });
+    countrySelect.addEventListener('change', function(){
+      phoneInput.placeholder = countrySelect.value === 'BR' ? '(11) 98765-4321' : '(305) 555-0123';
+      phoneInput.value = formatPhoneByCountry(countrySelect.value, phoneInput.value);
+    });
+    renderColorGrid(document.getElementById('fColor').value);
+  }
+
+  function renderColorGrid(selectedHex){
+    var grid = document.getElementById('colorGrid');
+    var hiddenInput = document.getElementById('fColor');
+    grid.innerHTML = '';
+    COLOR_PALETTE.forEach(function(c){
+      var sw = document.createElement('div');
+      sw.className = 'color-swatch' + (c.hex.toUpperCase() === (selectedHex||DEFAULT_COLOR).toUpperCase() ? ' selected' : '');
+      sw.style.background = c.hex;
+      sw.title = c.name;
+      sw.addEventListener('click', function(){
+        hiddenInput.value = c.hex;
+        grid.querySelectorAll('.color-swatch').forEach(function(el){ el.classList.remove('selected'); });
+        sw.classList.add('selected');
+      });
+      grid.appendChild(sw);
+    });
+  }
+
+  async function submitForm(prefill){
+    var groupName = document.getElementById('fGroupName').value.trim();
+    var hostName = document.getElementById('fHostName').value.trim();
+    var leaderName = document.getElementById('fLeaderName').value.trim();
+    var phone = document.getElementById('fPhone').value.trim();
+    var phoneCountry = document.getElementById('fPhoneCountry').value;
+    var showPhone = document.getElementById('fShowPhone').checked;
+    var whatsappGroupLink = document.getElementById('fWhatsappLink').value.trim();
+    var dayTime = document.getElementById('fDayTime').value.trim();
+    var weekday = document.getElementById('fWeekday').value;
+    var notes = document.getElementById('fNotes').value.trim();
+    var radius = parseInt(document.getElementById('fRadius').value, 10) || 300;
+    var color = document.getElementById('fColor').value || DEFAULT_COLOR;
+    var address = document.getElementById('fAddress').value.trim();
+
+    if(!groupName || !hostName || !leaderName || !address){
+      toast('Preencha nome do PG, anfitrião, líder e endereço.');
+      return;
+    }
+
+    var latlng = null;
+    if(pickedLatLng){
+      latlng = pickedLatLng;
+    } else if(selectedGeocode){
+      latlng = [selectedGeocode.lat, selectedGeocode.lng];
+    } else {
+      toast('Localizando endereço...');
+      latlng = await geocodePromise(address);
+      if(!latlng){
+        toast('Não achamos esse endereço. Use "Marcar no mapa" ou escolha uma sugestão da lista.');
+        return;
+      }
+    }
+
+    var jittered = jitter(latlng[0], latlng[1], radius);
+    var record = {
+      id: editingId || uid(),
+      groupName: groupName, hostName: hostName, leaderName: leaderName,
+      phone: phone, phoneCountry: phoneCountry, showPhone: showPhone, whatsappGroupLink: whatsappGroupLink,
+      dayTime: dayTime, weekday: weekday, notes: notes, radius: radius, color: color,
+      address: address, lat: jittered[0], lng: jittered[1]
+    };
+
+    var row = pgToRow(record);
+    toast('Salvando...');
+    try{
+      var result = editingId
+        ? await sb.from('pgs').update(row).eq('id', editingId)
+        : await sb.from('pgs').insert(row);
+      if(result.error) throw result.error;
+    }catch(e){
+      toast('Não foi possível salvar. Confira sua sessão e a conexão com o Supabase.');
+      return;
+    }
+    await loadPgs();
+    toast('Pequeno grupo salvo com sucesso.');
+    renderDashboard();
+  }
+
+  function geocodePromise(query){
+    return new Promise(function(resolve){
+      fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&viewbox=-87.634896,31.000968,-79.974307,24.396308&bounded=1&q=' + encodeURIComponent(query))
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if(data && data.length) resolve([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+          else resolve(null);
+        })
+        .catch(function(){ resolve(null); });
+    });
+  }
+
+  function renderManageList(){
+    var el = document.getElementById('manageList');
+    if(!pgs.length){ el.innerHTML = '<p style="color:var(--ink-muted);font-size:13px;">Nenhum grupo cadastrado ainda.</p>'; return; }
+    el.innerHTML = '';
+    pgs.forEach(function(pg){
+      var row = document.createElement('div');
+      row.className = 'manage-item';
+      row.innerHTML =
+        '<div class="info"><h4><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:' + (pg.color || DEFAULT_COLOR) + ';margin-right:7px;"></span>' + escapeHtml(pg.groupName) + '</h4><p>' + escapeHtml(pg.hostName) + ' · ' + escapeHtml(pg.address) + (pg.showPhone === false ? ' · 📵 telefone oculto' : '') + '</p></div>' +
+        '<div class="manage-actions"><button class="icon-mini" data-edit="' + pg.id + '">✎</button><button class="icon-mini" data-del="' + pg.id + '">🗑</button></div>';
+      el.appendChild(row);
+    });
+    el.querySelectorAll('[data-edit]').forEach(function(btn){
+      btn.addEventListener('click', function(){ startEdit(btn.getAttribute('data-edit')); });
+    });
+    el.querySelectorAll('[data-del]').forEach(function(btn){
+      btn.addEventListener('click', function(){ deleteGroup(btn.getAttribute('data-del')); });
+    });
+  }
+
+  function startEdit(id){
+    var pg = pgs.find(function(p){ return p.id === id; });
+    if(!pg) return;
+    editingId = id;
+    modalBox.innerHTML =
+      '<button class="modal-close" onclick="window.__closeModal()">✕</button>' +
+      '<h2>Editar pequeno grupo</h2>' +
+      '<p class="sub">Atualize as informações abaixo.</p>' +
+      formFieldsHtml(pg) +
+      '<button class="btn-primary" id="saveBtn">Salvar alterações</button>' +
+      '<button class="btn-secondary btn-danger" id="cancelEditBtn">Cancelar edição</button>';
+    bindFormEvents(pg);
+    document.getElementById('cancelEditBtn').addEventListener('click', function(){ renderDashboard(); });
+  }
+
+  async function deleteGroup(id){
+    try{
+      var result = await sb.from('pgs').delete().eq('id', id);
+      if(result.error) throw result.error;
+    }catch(e){
+      toast('Não foi possível remover. Confira sua sessão.');
+      return;
+    }
+    await loadPgs();
+    renderDashboard();
+    toast('Grupo removido.');
+  }
+
+  map.on('click', function(e){
+    if(pickingOnMap){
+      pickedLatLng = [e.latlng.lat, e.latlng.lng];
+      pickingOnMap = false;
+      isAdmin ? renderDashboard() : renderLogin();
+      backdrop.classList.add('show');
+      setTimeout(function(){
+        if(document.getElementById('fAddress')) document.getElementById('fAddress').value = 'Marcado manualmente no mapa';
+      }, 50);
+      toast('Local marcado. Complete os demais campos.');
+    }
+  });
+
+  window.__closeModal = closeModal;
+
+  loadPgs();
+  sb.auth.getSession().then(function(res){
+    if(res && res.data && res.data.session) isAdmin = true;
+  });
+
+  // tenta centralizar suavemente na localização do visitante ao abrir, sem travar a experiência
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      if(!pgs.length){ map.setView([pos.coords.latitude, pos.coords.longitude], 13); }
+    }, function(){}, { timeout: 4000 });
+  }
+})();
+</script>
+</body>
+</html>
