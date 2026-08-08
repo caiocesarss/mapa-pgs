@@ -273,9 +273,31 @@
     box-shadow: var(--shadow-lift); white-space:nowrap;
   }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ---------- Auth gate (bloqueia a visualização para não logados) ---------- */
+  .auth-gate{
+    position:fixed; inset:0; z-index:2000; background: var(--night);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .auth-card{
+    width:100%; max-width:360px; background:var(--paper); border-radius:22px;
+    padding:26px 24px; box-shadow: var(--shadow-lift);
+  }
+  .auth-card h2{ font-family:var(--font-display); font-size:22px; margin:0 0 4px; color:var(--ink); }
+  .auth-card .sub{ font-size:13px; color:var(--ink-muted); margin:0 0 18px; }
 </style>
 </head>
 <body>
+
+<div class="auth-gate" id="authGate">
+  <div class="auth-card">
+    <h2>Acesso restrito</h2>
+    <p class="sub">Este mapa é visível apenas para contas cadastradas. Entre com o e-mail e senha que você recebeu.</p>
+    <div class="field"><label>E-mail</label><input type="email" id="gateEmail" placeholder="voce@igreja.org"/></div>
+    <div class="field"><label>Senha</label><input type="password" id="gatePassword" placeholder="••••••••"/></div>
+    <button class="btn-primary" id="gateSubmit">Entrar</button>
+  </div>
+</div>
 
 <div id="map"></div>
 
@@ -750,6 +772,7 @@
       await sb.auth.signOut();
       isAdmin = false;
       closeModal();
+      document.getElementById('authGate').style.display = 'flex';
       toast('Sessão encerrada.');
     });
   }
@@ -985,9 +1008,33 @@
 
   window.__closeModal = closeModal;
 
-  loadPgs();
+  function hideGate(){
+    var gate = document.getElementById('authGate');
+    if(gate) gate.style.display = 'none';
+  }
+
+  async function doGateLogin(){
+    var email = document.getElementById('gateEmail').value.trim();
+    var password = document.getElementById('gatePassword').value;
+    if(!email || !password){ toast('Preencha e-mail e senha.'); return; }
+    toast('Entrando...');
+    var result = await sb.auth.signInWithPassword({ email: email, password: password });
+    if(result.error){ toast('E-mail ou senha incorretos.'); return; }
+    isAdmin = true;
+    hideGate();
+    loadPgs();
+  }
+  document.getElementById('gateSubmit').addEventListener('click', doGateLogin);
+  document.getElementById('gatePassword').addEventListener('keydown', function(e){ if(e.key === 'Enter') doGateLogin(); });
+
   sb.auth.getSession().then(function(res){
-    if(res && res.data && res.data.session) isAdmin = true;
+    var hasSession = !!(res && res.data && res.data.session);
+    if(hasSession){
+      isAdmin = true;
+      hideGate();
+      loadPgs();
+    }
+    // sem sessão: a tela de acesso restrito permanece visível e os dados não são carregados
   });
 
   // tenta centralizar suavemente na localização do visitante ao abrir, sem travar a experiência
