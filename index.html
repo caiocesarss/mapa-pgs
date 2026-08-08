@@ -405,6 +405,14 @@
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpmb2Z0dmxodGZ0YWd6am9lZm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMzY3NDAsImV4cCI6MjEwMTcxMjc0MH0.3ATrh4o9odPk_9PO9jzNEwUib3FWbiKjE9zu01yObB8';
   var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // ---------- Configuração do Google Maps (Places + Geocoding) ----------
+  // Crie em: console.cloud.google.com > APIs & Services > Credentials
+  // Restrinja a chave por "HTTP referrers" para o domínio do GitHub Pages antes de publicar.
+  var GOOGLE_MAPS_API_KEY = 'AIzaSyBmEYFbWNHE70XfH6ENKSAE01BZCCC7WCY';
+
+  // Bounding box da Flórida, reaproveitado tanto no autocomplete quanto no geocoding
+  var FL_BOUNDS = { south: 24.396308, west: -87.634896, north: 31.000968, east: -79.974307 };
+
   var DEFAULT_CENTER = [26.3184, -80.0998]; // Deerfield Beach, FL - ajuste para a sua cidade
   var DEFAULT_COLOR = '#7C3AED';
   // Paleta curada: tons de média/alta saturação e escurecidos o suficiente para manter
@@ -671,17 +679,11 @@
   async function geocodeAndPlace(query, onSuccess){
     if(!query || !query.trim()) return;
     toast('Localizando endereço...');
-    try{
-      var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&viewbox=-87.634896,31.000968,-79.974307,24.396308&bounded=1&q=' + encodeURIComponent(query);
-      var res = await fetch(url);
-      var data = await res.json();
-      if(data && data.length){
-        onSuccess(parseFloat(data[0].lat), parseFloat(data[0].lon), 'Endereço localizado');
-      } else {
-        toast('Endereço não encontrado. Tente ser mais específico.');
-      }
-    }catch(e){
-      toast('Busca automática indisponível agora. Tente pelo botão de localização.');
+    var latlng = await geocodePromise(query);
+    if(latlng){
+      onSuccess(latlng[0], latlng[1], 'Endereço localizado');
+    } else {
+      toast('Endereço não encontrado. Tente ser mais específico.');
     }
   }
 
@@ -696,46 +698,103 @@
     });
   });
 
+  function newSessionToken(){
+    // crypto.randomUUID existe em todo navegador moderno (HTTPS, exigido pelo GitHub Pages)
+    return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'st_' + Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+
   function attachAutocomplete(input, dark, onSelect){
     var wrap = document.createElement('div');
     wrap.className = 'ac-list' + (dark ? ' dark' : '');
     input.parentNode.appendChild(wrap);
     acRegistry.push({ input: input, wrap: wrap });
     var timer;
+    var sessionToken = null; // criado no primeiro toque de tecla da sessão, descartado após a escolha
     input.addEventListener('input', function(){
       selectedGeocode = null;
       clearTimeout(timer);
+      if(!sessionToken) sessionToken = newSessionToken();
       var q = input.value.trim();
       if(q.length < 4){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
-      timer = setTimeout(function(){ fetchSuggestions(q, wrap, input, onSelect); }, 350);
+      timer = setTimeout(function(){
+        fetchSuggestions(q, wrap, input, sessionToken, function(sel){
+          sessionToken = null; // fecha a sessão de billing; a próxima tecla abre uma nova
+          onSelect(sel);
+        });
+      }, 350);
     });
   }
 
-  async function fetchSuggestions(query, wrap, input, onSelect){
+  async function fetchSuggestions(query, wrap, input, sessionToken, onSelect){
     var myToken = (wrap._reqToken || 0) + 1;
     wrap._reqToken = myToken;
     try{
-      var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=0&countrycodes=us&viewbox=-87.634896,31.000968,-79.974307,24.396308&bounded=1&q=' + encodeURIComponent(query);
-      var res = await fetch(url);
+      var res = await fetch('https://places.googleapis.com/v1/places:autocomplete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': GOOGLE_MAPS_API_KEY
+        },
+        body: JSON.stringify({
+          input: query,
+          sessionToken: sessionToken,
+          includedRegionCodes: ['us'],
+          locationRestriction: {
+            rectangle: {
+              low: { latitude: FL_BOUNDS.south, longitude: FL_BOUNDS.west },
+              high: { latitude: FL_BOUNDS.north, longitude: FL_BOUNDS.east }
+            }
+          }
+        })
+      });
       var data = await res.json();
       if(wrap._reqToken !== myToken) return; // uma busca mais recente já foi disparada, ignora esta resposta
-      if(!data || !data.length){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+      var suggestions = (data && data.suggestions) || [];
+      if(!suggestions.length){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
       wrap.innerHTML = '';
-      data.forEach(function(item){
+      suggestions.forEach(function(s){
+        var pred = s.placePrediction;
+        if(!pred) return;
+        var label = pred.text ? pred.text.text : '';
         var opt = document.createElement('div');
         opt.className = 'ac-item';
-        opt.textContent = item.display_name;
-        opt.addEventListener('click', function(){
-          input.value = item.display_name;
+        opt.textContent = label;
+        opt.addEventListener('click', async function(){
+          input.value = label;
           wrap.style.display = 'none';
           wrap.innerHTML = '';
-          onSelect({ lat: parseFloat(item.lat), lng: parseFloat(item.lon), label: item.display_name });
+          toast('Confirmando endereço...');
+          var loc = await resolvePlaceDetails(pred.placeId, sessionToken);
+          if(loc){
+            onSelect({ lat: loc.lat, lng: loc.lng, label: label });
+          } else {
+            toast('Não foi possível confirmar esse endereço. Tente novamente.');
+          }
         });
         wrap.appendChild(opt);
       });
       wrap.style.display = 'block';
     }catch(e){
       if(wrap._reqToken === myToken) wrap.style.display = 'none';
+    }
+  }
+
+  // Resolve o placeId escolhido em lat/lng. Essa chamada também "fecha" a sessão
+  // de billing do Autocomplete (New) - por isso o sessionToken é reenviado aqui.
+  async function resolvePlaceDetails(placeId, sessionToken){
+    try{
+      var url = 'https://places.googleapis.com/v1/places/' + placeId + '?sessionToken=' + sessionToken;
+      var res = await fetch(url, {
+        headers: {
+          'X-Goog-Api-Key': GOOGLE_MAPS_API_KEY,
+          'X-Goog-FieldMask': 'location'
+        }
+      });
+      var data = await res.json();
+      if(data && data.location) return { lat: data.location.latitude, lng: data.location.longitude };
+      return null;
+    }catch(e){
+      return null;
     }
   }
 
@@ -979,15 +1038,21 @@
   }
 
   function geocodePromise(query){
-    return new Promise(function(resolve){
-      fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&viewbox=-87.634896,31.000968,-79.974307,24.396308&bounded=1&q=' + encodeURIComponent(query))
-        .then(function(r){ return r.json(); })
-        .then(function(data){
-          if(data && data.length) resolve([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
-          else resolve(null);
-        })
-        .catch(function(){ resolve(null); });
-    });
+    var bounds = FL_BOUNDS.south + ',' + FL_BOUNDS.west + '|' + FL_BOUNDS.north + ',' + FL_BOUNDS.east;
+    var url = 'https://maps.googleapis.com/maps/api/geocode/json' +
+      '?address=' + encodeURIComponent(query) +
+      '&region=us&bounds=' + bounds +
+      '&key=' + GOOGLE_MAPS_API_KEY;
+    return fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(data && data.status === 'OK' && data.results && data.results.length){
+          var loc = data.results[0].geometry.location;
+          return [loc.lat, loc.lng];
+        }
+        return null;
+      })
+      .catch(function(){ return null; });
   }
 
   function renderManageList(){
